@@ -1,5 +1,5 @@
 # Credits and orignal author: https://github.com/fourjr/modmail-plugins/blob/master/claim/claim.py
-# Slightly modified for Minion_Kadin#2022 (discord) will modify this
+# Slightly modified for Minion_Kadin#2022 (discord) 
 # Please use the original plugin as this one may cause your bot to nuke the world
 
 import discord
