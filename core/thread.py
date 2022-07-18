@@ -4,6 +4,7 @@ import io
 import re
 import time
 import typing
+import requests
 from datetime import datetime, timedelta
 from types import SimpleNamespace
 
@@ -28,6 +29,14 @@ from core.utils import (
 
 logger = getLogger(__name__)
 
+
+def get_roblox_user_by_discord_id(id):
+    try:
+        req1 = requests.get(f"https://verify.eryn.io/api/user/{id}")
+        authid = req1.json()["robloxId"]
+        return authid
+    except:
+        return id
 
 class Thread:
     """Represents a discord Modmail thread"""
@@ -324,8 +333,12 @@ class Thread:
 
         embed.set_author(name=str(user), icon_url=user.avatar_url, url=log_url)
 
+
+
         # product information, their robloxid 
-        embed.add_field(name="Testing", value="this will show their information thank you")
+        robloxId = get_roblox_user_by_discord_id(user.id)
+
+        embed.add_field(name="Roblox Id", value=robloxId)
         embed.set_thumbnail(url=user.avatar_url)
 
         if member is not None:
