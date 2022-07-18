@@ -317,12 +317,16 @@ class Thread:
         embed = discord.Embed(color=color, description=user.mention, timestamp=time)
 
         if user.dm_channel:
+            # footer stuff thank you, <3
             footer = f"User ID: {user.id} • DM ID: {user.dm_channel.id}"
         else:
             footer = f"User ID: {user.id}"
 
         embed.set_author(name=str(user), icon_url=user.avatar_url, url=log_url)
-        # embed.set_thumbnail(url=avi)
+
+        # product information, their robloxid 
+        embed.add_field(name="Testing", value="this will show their information thank you")
+        embed.set_thumbnail(url=user.avatar_url)
 
         if member is not None:
             joined = str((time - member.joined_at).days)
