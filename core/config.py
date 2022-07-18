@@ -85,7 +85,7 @@ class ConfigManager:
         "disabled_current_thread_response": "We are not accepting any messages.",
         "disabled_current_thread_footer": "Please try again later...",
         "transfer_reactions": True,
-        "close_on_leave": False,
+        "close_on_leave": True,
         "close_on_leave_reason": "The recipient has left the server.",
         "alert_on_mention": False,
         "silent_alert_on_mention": False,
@@ -116,9 +116,9 @@ class ConfigManager:
         "react_to_contact_message": None,
         "react_to_contact_emoji": "\N{WHITE HEAVY CHECK MARK}",
         # confirm thread creation
-        "confirm_thread_creation": False,
+        "confirm_thread_creation": True,
         "confirm_thread_creation_title": "Confirm thread creation",
-        "confirm_thread_response": "React to confirm thread creation which will directly contact the moderators",
+        "confirm_thread_response": "React to confirm thread creation which will directly contact the support team.",
         "confirm_thread_creation_accept": "\N{WHITE HEAVY CHECK MARK}",
         "confirm_thread_creation_deny": "\N{NO ENTRY SIGN}",
         # regex
