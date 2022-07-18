@@ -343,14 +343,14 @@ class Thread:
 
         if member is not None:
             joined = str((time - member.joined_at).days)
-            # embed.add_field(name='Joined', value=joined + days(joined))
+            embed.add_field(name='Joined', value=joined + days(joined))
             if self.bot.config["thread_show_join_age"]:
                 user_info.append(f"joined {days(joined)}")
 
             if member.nick:
                 embed.add_field(name="Nickname", value=member.nick, inline=True)
-            if role_names:
-                embed.add_field(name="Roles", value=role_names, inline=True)
+            # if role_names:
+            #     embed.add_field(name="Roles", value=role_names, inline=True)
             embed.set_footer(text=footer)
         else:
             embed.set_footer(text=f"{footer} • (not in main server)")
