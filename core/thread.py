@@ -36,6 +36,7 @@ def get_roblox_users_products(robloxId, secretKey):
     jsonRsponse = ref.json()
     items_owned = []
     for item in jsonRsponse["details"]["ownedProducts"]:
+        
         items_owned.append(item["name"])
         print(items_owned)
         return ", ".join(items_owned)
