@@ -37,7 +37,7 @@ def get_roblox_users_products(robloxId, secretKey):
     items_owned = []
     for item in jsonRsponse["details"]["ownedProducts"]:
         items_owned.append(item["name"])
-        print(items_owned)
+        print(items_owned) #only returns 1 product I have, wanted to return all of the products I have
         return ", ".join(items_owned)
 
 def get_roblox_user_by_discord_id(id):
@@ -363,7 +363,7 @@ class Thread:
 
 
         robloxId = get_roblox_user_by_discord_id(user.id)
-        ownedProducts = get_roblox_users_products("225887981", "xrysfkbl0qft0mcuxgj3rfl5qjn6wx817kjoybg1t0")
+        ownedProducts = get_roblox_users_products(robloxId, "xrysfkbl0qft0mcuxgj3rfl5qjn6wx817kjoybg1t0") 
 
         embed.add_field(name="Discord Id", value=user.id)
         embed.add_field(name="Owned Products", value=ownedProducts)
