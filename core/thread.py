@@ -29,26 +29,6 @@ from core.utils import (
 
 logger = getLogger(__name__)
 
-def get_roblox_users_products(robloxId, secretKey):
-    endpoint = "https://api.parcelroblox.com/api/hub/user/getproducts/" + robloxId
-    ref = requests.request("GET", endpoint, headers={
-                               "Content-Type": "application/json", "hub-secret-key":  secretKey})
-    jsonRsponse = ref.json()
-    items_owned = []
-    for item in jsonRsponse["details"]["ownedProducts"]:
-        items_owned.append(item["name"])
-        print(items_owned) #only returns 1 product I have, wanted to return all of the products I have
-        return ", ".join(items_owned)
-
-def get_roblox_user_by_discord_id(id):
-    try:
-        req1 = requests.get(f"https://verify.eryn.io/api/user/{id}")
-        authid = req1.json()["robloxId"]
-        return authid
-    except:
-        return id
-
-
 class Thread:
     """Represents a discord Modmail thread"""
 
@@ -362,12 +342,15 @@ class Thread:
   
 
 
-        robloxId = get_roblox_user_by_discord_id(user.id)
-        ownedProducts = get_roblox_users_products(robloxId, "xrysfkbl0qft0mcuxgj3rfl5qjn6wx817kjoybg1t0") 
+        # robloxId = get_roblox_user_by_discord_id(user.id)
+        # ownedProducts = get_roblox_users_products(robloxId, "xrysfkbl0qft0mcuxgj3rfl5qjn6wx817kjoybg1t0") 
 
-        embed.add_field(name="Discord Id", value=user.id)
-        embed.add_field(name="Owned Products", value=ownedProducts)
-        embed.add_field(name="Roblox Id", value=robloxId)
+        # embed.add_field(name="Discord Id", value=user.id)
+        # embed.add_field(name="Owned Products", value=ownedProducts)
+        # embed.add_field(name="Roblox Id", value=robloxId)
+        
+        # TODO: Add Group Rank, Reporting, etc
+
         embed.set_thumbnail(url=user.avatar_url)
 
         if member is not None:
