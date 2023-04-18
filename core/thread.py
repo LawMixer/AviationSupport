@@ -7,8 +7,8 @@ import re
 import time
 import traceback
 import typing
-import warnings
-from datetime import timedelta
+import requests
+from datetime import datetime, timedelta
 from types import SimpleNamespace
 
 import isodate
@@ -33,7 +33,6 @@ from core.utils import (
 
 logger = getLogger(__name__)
 
-
 class Thread:
     """Represents a discord Modmail thread"""
 
@@ -42,7 +41,8 @@ class Thread:
         manager: "ThreadManager",
         recipient: typing.Union[discord.Member, discord.User, int],
         channel: typing.Union[discord.DMChannel, discord.TextChannel] = None,
-        other_recipients: typing.List[typing.Union[discord.Member, discord.User]] = None,
+        other_recipients: typing.List[typing.Union[discord.Member,
+            discord.User]] = None,
     ):
         self.manager = manager
         self.bot = manager.bot
@@ -74,7 +74,8 @@ class Thread:
     async def wait_until_ready(self) -> None:
         """Blocks execution until the thread is fully set up."""
         # timeout after 30 seconds
-        task = self.bot.loop.create_task(asyncio.wait_for(self._ready_event.wait(), timeout=25))
+        task = asyncio.create_task(asyncio.wait_for(
+            self._ready_event.wait(), timeout=25))
         self.wait_tasks.append(task)
         try:
             await task
@@ -140,7 +141,8 @@ class Thread:
                     continue
                 other_recipients.append(other_recipient)
 
-            thread = cls(manager, recipient or recipient_id, channel, other_recipients)
+            thread = cls(manager, recipient or recipient_id,
+                         channel, other_recipients)
 
         return thread
 
@@ -155,11 +157,13 @@ class Thread:
 
     async def setup(self, *, creator=None, category=None, initial_message=None):
         """Create the thread channel and other io related initialisation tasks"""
-        self.bot.dispatch("thread_initiate", self, creator, category, initial_message)
+        self.bot.dispatch("thread_initiate", self, creator,
+                          category, initial_message)
         recipient = self.recipient
 
         # in case it creates a channel outside of category
-        overwrites = {self.bot.modmail_guild.default_role: discord.PermissionOverwrite(read_messages=False)}
+        overwrites = {self.bot.modmail_guild.default_role: discord.PermissionOverwrite(
+            read_messages=False)}
 
         category = category or self.bot.main_category
 
@@ -169,7 +173,8 @@ class Thread:
         try:
             channel = await create_thread_channel(self.bot, recipient, category, overwrites)
         except discord.HTTPException as e:  # Failed to create due to missing perms.
-            logger.critical("An error occurred while creating a thread.", exc_info=True)
+            logger.critical(
+                "An error occurred while creating a thread.", exc_info=True)
             self.manager.cache.pop(self.id)
 
             embed = discord.Embed(color=self.bot.error_color)
@@ -185,13 +190,15 @@ class Thread:
 
         try:
             log_url, log_data = await asyncio.gather(
-                self.bot.api.create_log_entry(recipient, channel, creator or recipient),
+                self.bot.api.create_log_entry(
+                    recipient, channel, creator or recipient),
                 self.bot.api.get_user_logs(recipient.id),
             )
 
             log_count = sum(1 for log in log_data if not log["open"])
         except Exception:
-            logger.error("An error occurred while posting logs to the database.", exc_info=True)
+            logger.error(
+                "An error occurred while posting logs to the database.", exc_info=True)
             log_url = log_count = None
             # ensure core functionality still works
 
@@ -203,7 +210,8 @@ class Thread:
             mention = self.bot.config["mention"]
 
         async def send_genesis_message():
-            info_embed = self._format_info_embed(recipient, log_url, log_count, self.bot.main_color)
+            info_embed = self._format_info_embed(
+                recipient, log_url, log_count, self.bot.main_color)
             try:
                 msg = await channel.send(mention, embed=info_embed)
                 self.bot.loop.create_task(msg.pin())
@@ -221,7 +229,8 @@ class Thread:
                 timestamp=channel.created_at,
             )
 
-            recipient_thread_close = self.bot.config.get("recipient_thread_close")
+            recipient_thread_close = self.bot.config.get(
+                "recipient_thread_close")
 
             if recipient_thread_close:
                 footer = self.bot.config["thread_self_closable_creation_footer"]
@@ -288,7 +297,8 @@ class Thread:
             activate_auto_triggers(),
             send_persistent_notes(),
         )
-        self.bot.dispatch("thread_ready", self, creator, category, initial_message)
+        self.bot.dispatch("thread_ready", self, creator,
+                          category, initial_message)
 
     def _format_info_embed(self, user, log_url, log_count, color):
         """Get information about a member of a server
@@ -326,24 +336,44 @@ class Thread:
             created = discord.utils.format_dt(user.created_at, "R")
             user_info.append(f" was created {created}")
 
-        embed = discord.Embed(color=color, description=user.mention, timestamp=time)
+        embed = discord.Embed(
+            color=color, description=user.mention, timestamp=time)
 
         if user.dm_channel:
-            footer = f"User ID: {user.id} • DM ID: {user.dm_channel.id}"
+            # footer stuff thank you, <3
+            footer = f"DM ID: {user.dm_channel.id}"
         else:
             footer = f"User ID: {user.id}"
 
-        if member is not None:
-            embed.set_author(name=str(user), icon_url=member.display_avatar.url, url=log_url)
+        embed.set_author(name=str(user), icon_url=user.avatar_url, url=log_url)
 
+        # product information, their robloxid
+
+  
+
+
+        # robloxId = get_roblox_user_by_discord_id(user.id)
+        # ownedProducts = get_roblox_users_products(robloxId, "xrysfkbl0qft0mcuxgj3rfl5qjn6wx817kjoybg1t0") 
+
+        # embed.add_field(name="Discord Id", value=user.id)
+        # embed.add_field(name="Owned Products", value=ownedProducts)
+        # embed.add_field(name="Roblox Id", value=robloxId)
+        
+        # TODO: Add Group Rank, Reporting, etc
+
+        embed.set_thumbnail(url=user.avatar_url)
+
+        if member is not None:
+            joined = str((time - member.joined_at).days)
+            embed.add_field(name='Joined', value=joined + days(joined))
             if self.bot.config["thread_show_join_age"]:
                 joined = discord.utils.format_dt(member.joined_at, "R")
                 user_info.append(f"joined {joined}")
 
             if member.nick:
                 embed.add_field(name="Nickname", value=member.nick, inline=True)
-            if role_names:
-                embed.add_field(name="Roles", value=role_names, inline=True)
+            # if role_names:
+            #     embed.add_field(name="Roles", value=role_names, inline=True)
             embed.set_footer(text=footer)
         else:
             embed.set_author(name=str(user), icon_url=user.display_avatar.url, url=log_url)
