@@ -345,23 +345,11 @@ class Thread:
         else:
             footer = f"User ID: {user.id}"
 
-        embed.set_author(name=str(user), icon_url=user.avatar_url, url=log_url)
+        embed.set_author(name=str(user), icon_url=user.avatar.url, url=log_url)
 
-        # product information, their robloxid
+        # TODO: custom verification 
 
-  
-
-
-        # robloxId = get_roblox_user_by_discord_id(user.id)
-        # ownedProducts = get_roblox_users_products(robloxId, "xrysfkbl0qft0mcuxgj3rfl5qjn6wx817kjoybg1t0") 
-
-        # embed.add_field(name="Discord Id", value=user.id)
-        # embed.add_field(name="Owned Products", value=ownedProducts)
-        # embed.add_field(name="Roblox Id", value=robloxId)
-        
-        # TODO: Add Group Rank, Reporting, etc
-
-        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_thumbnail(url=user.avatar.url)
 
         if member is not None:
             joined = str((time - member.joined_at).days)
