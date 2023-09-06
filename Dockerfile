@@ -1,13 +1,10 @@
-FROM python:3.10 as py
+FROM python:3.10
 
-FROM py as build
+WORKDIR /
 
-RUN apt update && apt install -y g++ git
-COPY requirements.txt /
-RUN pip install -r requirements.txt
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-FROM py
+COPY . .
 
-ENV USING_DOCKER yes
-
-CMD ["python", "bot.py"]
+CMD [ "python3.10", "-u", "main.py" ]
