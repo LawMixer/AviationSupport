@@ -9,8 +9,5 @@ RUN pip install -r requirements.txt
 FROM py
 
 ENV USING_DOCKER yes
-COPY --from=build /inst /usr/local
 
-WORKDIR /modmailbot
 CMD ["python", "bot.py"]
-COPY . /modmailbot
